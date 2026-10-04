@@ -2197,3 +2197,10 @@ button,
         opacity: .5
     }
 }
+
+.nav-active-link {
+    color: var(--color-blue-400);
+    background-color: var(--color-blue-500/10);
+}
+
+/* bg-blue-500/10 text-blue-400 */

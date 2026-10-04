@@ -13,16 +13,28 @@ navTodayInSpace.addEventListener('click', function () {
     sectionTodayInSpace.classList.remove('hidden');
     sectionLaunches.classList.add('hidden');
     sectionPlanets.classList.add('hidden');
+
+    navTodayInSpace.classList.add('nav-active-link');
+    navLaunches.classList.remove('nav-active-link');
+    navPlanets.classList.remove('nav-active-link');
 });
 
 navLaunches.addEventListener('click', function () {
     sectionTodayInSpace.classList.add('hidden');
     sectionLaunches.classList.remove('hidden');
     sectionPlanets.classList.add('hidden');
+
+    navLaunches.classList.add('nav-active-link');
+    navTodayInSpace.classList.remove('nav-active-link');
+    navPlanets.classList.remove('nav-active-link');
 });
 
 navPlanets.addEventListener('click', function () {
     sectionTodayInSpace.classList.add('hidden');
     sectionLaunches.classList.add('hidden');
     sectionPlanets.classList.remove('hidden');
+    
+    navPlanets.classList.add('nav-active-link');
+    navTodayInSpace.classList.remove('nav-active-link');
+    navLaunches.classList.remove('nav-active-link');
 });

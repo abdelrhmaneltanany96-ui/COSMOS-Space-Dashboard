@@ -146,12 +146,12 @@ let featuredDescription = document.querySelector("#featured-description");
 let featuredImage = document.querySelector("#featured-image");
 let launchesGrid = document.querySelector("#launches-grid");
 
-let data2;
-async function getUpcomingLaunches() {
-    let response2 = await fetch('https://lldev.thespacedevs.com/2.3.0/launches/upcoming/?limit=10')
-    data2 = await response2.json();
 
-    let featuredLaunch = data2.results[0];
+async function getUpcomingLaunches() {
+    let response = await fetch('https://lldev.thespacedevs.com/2.3.0/launches/upcoming/?limit=10')
+    let data = await response.json();
+
+    let featuredLaunch = data.results[0];
 
     console.log(featuredLaunch);
 
@@ -166,7 +166,7 @@ async function getUpcomingLaunches() {
     featuredImage.src = featuredLaunch.image.image_url;
 
 
-    data2.results.slice(1).forEach(function (launch) {
+    data.results.slice(1).forEach(function (launch) {
 
         launchesGrid.innerHTML += `
         <div class="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden hover:border-blue-500/30 transition-all group cursor-pointer">
@@ -252,3 +252,157 @@ getUpcomingLaunches();
 
 
 
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+
+
+
+
+let planetDetailName = document.querySelector('#planet-detail-name');
+let planetDetailImage = document.querySelector('#planet-detail-image');
+let planetDescription = document.querySelector('#planet-detail-description')
+let planetDistance = document.querySelector('#planet-distance');
+let planetRadius = document.querySelector('#planet-radius');
+let planetMass = document.querySelector('#planet-mass');
+let planetDensity = document.querySelector('#planet-density');
+let planetOrbitalPeriod = document.querySelector('#planet-orbital-period');
+let planetRotation = document.querySelector('#planet-rotation');
+let planetMoons = document.querySelector('#planet-moons');
+let planetGravity = document.querySelector('#planet-gravity');
+
+
+let planetDiscoverer = document.querySelector('#planet-discoverer');
+let planetDiscoveryDate = document.querySelector('#planet-discovery-date');
+let planetBodyType = document.querySelector('#planet-body-type');
+
+
+let planetPerihelion = document.querySelector('#planet-perihelion');
+let planetAphelion = document.querySelector('#planet-aphelion');
+let planetEccentricity = document.querySelector('#planet-eccentricity');
+let planetInclination = document.querySelector('#planet-inclination');
+let planetAxialTilt = document.querySelector('#planet-axial-tilt');
+let planetTemp = document.querySelector('#planet-temp');
+let planetEscape = document.querySelector('#planet-escape');
+
+
+let planetCards = document.querySelectorAll('.planet-card');
+
+
+async function getPlanets() {
+
+    let response = await fetch('https://solar-system-opendata-proxy.vercel.app/api/planets');
+    let data = await response.json();
+    // (filter) higher function becaouse it take another func. as a parameters
+    let planets = data.bodies.filter(function (planet) {
+        return planet.isPlanet == true;
+    });
+
+    console.log(planets);
+
+
+
+
+    // here we selected 8 cards for 8 planets so we have nodeList and it's same as array as it's iterartive
+    // here for loop foe each card and add event click for each them
+    planetCards.forEach(function (card) {
+
+        card.addEventListener('click', function () {
+            // let planetId = card.dataset.planetId means
+            // for example every card has <div class="planet-card" data-planet-id="earth"> 
+            // so here that's means planetId = "earth";
+            let planetId = card.dataset.planetId;
+            // here we put the planet which has english name with lower case same as planetId in new variable called selectedPlanet
+            // and find also higher order function  
+            let selectedPlanet = planets.find(function (planet) {
+                return planet.englishName.toLowerCase() == planetId;
+            });
+            console.log(selectedPlanet);
+
+            // main card for choosen planet
+            planetDetailName.innerHTML = selectedPlanet.englishName;
+            planetDetailImage.src =
+                `./assets/images/${selectedPlanet.englishName.toLowerCase()}.png`;
+            planetDescription.innerHTML = selectedPlanet.description;
+            // toLocalString using in
+            // let number = 149600000
+            // console.log(number.toLocaleString())
+            // Output:
+            // 149,600,000  
+            planetDistance.innerHTML =
+                selectedPlanet.semimajorAxis.toLocaleString() + ' km';
+            planetRadius.innerHTML =
+                selectedPlanet.meanRadius.toLocaleString() + ' km';
+            if (selectedPlanet.mass) {
+                planetMass.innerHTML =
+                    selectedPlanet.mass.massValue +
+                    ' × 10^' +
+                    selectedPlanet.mass.massExponent +
+                    ' kg';
+            } else {
+                planetMass.innerHTML = 'N/A';
+            }
+            planetDensity.innerHTML =
+                selectedPlanet.density + ' g/cm³';
+            planetOrbitalPeriod.innerHTML =
+                selectedPlanet.sideralOrbit + ' days';
+            planetRotation.innerHTML =
+                selectedPlanet.sideralRotation + ' hours';
+            if (selectedPlanet.moons) {
+                planetMoons.innerHTML =
+                    selectedPlanet.moons.length;
+            } else {
+                planetMoons.innerHTML = 0;
+            }
+            planetGravity.innerHTML =
+                selectedPlanet.gravity + ' m/s²';
+            if (selectedPlanet.discoveredBy) {
+                planetDiscoverer.innerHTML =
+                    selectedPlanet.discoveredBy;
+            } else {
+                planetDiscoverer.innerHTML =
+                    'Known since antiquity';
+            }
+
+
+
+
+
+            //Discovery Info    
+            if (selectedPlanet.discoveryDate) {
+                planetDiscoveryDate.innerHTML =
+                    selectedPlanet.discoveryDate;
+            } else {
+                planetDiscoveryDate.innerHTML =
+                    'Ancient';
+            }
+            planetBodyType.innerHTML =
+                selectedPlanet.bodyType;
+
+
+
+
+
+
+
+            //Orbital Characteristics
+            planetPerihelion.innerHTML =
+                selectedPlanet.perihelion.toLocaleString() + ' km';
+            planetAphelion.innerHTML =
+                selectedPlanet.aphelion.toLocaleString() + ' km';
+            planetEccentricity.innerHTML =
+                selectedPlanet.eccentricity;
+            planetInclination.innerHTML =
+                selectedPlanet.inclination + '°';
+            planetAxialTilt.innerHTML =
+                selectedPlanet.axialTilt + '°';
+            planetTemp.innerHTML =
+                Math.round(selectedPlanet.avgTemp - 273.15) + '°C';
+            planetEscape.innerHTML =
+                (selectedPlanet.escape / 1000).toFixed(2) + ' km/s';
+        });
+    });
+}
+getPlanets();

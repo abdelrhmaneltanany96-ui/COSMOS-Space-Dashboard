@@ -40,6 +40,24 @@ navPlanets.addEventListener('click', function () {
 });
 
 
+
+
+
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
 // .................................................................................................................
 // .................................................................................................................
 // .................................................................................................................
@@ -58,80 +76,82 @@ let apodCopyright = document.querySelector("#apod-copyright");
 let apodDateInfo = document.querySelector("#apod-date-info");
 let apodMediaType = document.querySelector("#apod-media-type");
 
-
 let apodDateInput = document.querySelector("#apod-date-input");
 let loadDateBtn = document.querySelector("#load-date-btn");
 
-
 let todayApodBtn = document.querySelector("#today-apod-btn");
-
 
 let data;
 
+// fetching data and display data of today 
 async function getData() {
-
-    var response = await fetch('https://science.nasa.gov/wp-json/wp/v2/apod-basic/?api_key=DEMO_KEY');
+    let response = await fetch("https://science.nasa.gov/wp-json/wp/v2/apod-basic/?api_key=DEMO_KEY");
     data = await response.json();
-
     console.log(data[0]);
-
-    apodTitle.innerHTML = data[0].title;
-    apodDataDisplay.innerHTML = data[0].date;
-    apodDate.innerHTML = `Astronomy Picture of the Day - ${data[0].date}`;
-    apodDateDetail.innerHTML = `<i class="far fa-calendar mr-2"></i>${data[0].date}`;
-    apodExplanation.innerHTML = data[0].explanation;
-    apodCopyright.innerHTML = data[0].copyright;
-    apodDateInfo.innerHTML = data[0].date;
-    apodMediaType.innerHTML = data[0].media_type;
-    apodImage.src = data[0].hdurl;
+    displayApod(data[0]);
 }
+
+// display data 
+function displayApod(item) {
+    apodTitle.innerHTML = item.title;
+    apodDataDisplay.innerHTML = item.date;
+    apodDate.innerHTML = `Astronomy Picture of the Day - ${item.date}`;
+    apodDateDetail.innerHTML = `
+        <i class="far fa-calendar mr-2"></i>
+        ${item.date}
+    `;
+    apodExplanation.innerHTML = item.explanation;
+    apodCopyright.innerHTML = item.copyright || "NASA";
+    apodDateInfo.innerHTML = item.date;
+    apodMediaType.innerHTML = item.media_type;
+    apodImage.src = item.hdurl || item.url;
+}
+
 getData();
-
-
-
+// add event to loadDataBtn
 loadDateBtn.addEventListener("click", function () {
-
     let selectedDate = data.find(function (item) {
         return item.date === apodDateInput.value;
     });
-
-    apodTitle.innerHTML = selectedDate.title;
-    apodImage.src = selectedDate.hdurl;
-    apodDataDisplay.innerHTML = selectedDate.date;
-    apodDate.innerHTML = `Astronomy Picture of the Day - ${selectedDate.date}`;
-    apodDateDetail.innerHTML = `<i class="far fa-calendar mr-2"></i>${selectedDate.date}`;
-    apodDateInfo.innerHTML = selectedDate.date;
-    apodExplanation.innerHTML = selectedDate.explanation;
-    apodCopyright.innerHTML = selectedDate.copyright;
-    apodMediaType.innerHTML = selectedDate.media_type;
-
+    if (selectedDate) {
+        displayApod(selectedDate);
+    }
+    else{
+        displayApod(data[0]);
+    }
 });
 
-
-
+// add event to todayApodBtn
 todayApodBtn.addEventListener("click", function () {
-
-    apodTitle.innerHTML = data[0].title;
-    apodImage.src = data[0].hdurl;
-    apodDataDisplay.innerHTML = data[0].date;
-    apodDate.innerHTML = `Astronomy Picture of the Day - ${data[0].date}`;
-    apodDateDetail.innerHTML = `<i class="far fa-calendar mr-2"></i>${data[0].date}`;
-    apodDateInfo.innerHTML = data[0].date;
-    apodExplanation.innerHTML = data[0].explanation;
-    apodCopyright.innerHTML = data[0].copyright;
-    apodMediaType.innerHTML = data[0].media_type;
-
+    displayApod(data[0]);
 });
 
 
 
 
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
 
-// .................................................................................................................
-// .................................................................................................................
-// .................................................................................................................
-// .................................................................................................................
-// .................................................................................................................
+
+
 
 
 let featuredName = document.querySelector("#featured-name");
@@ -148,110 +168,174 @@ let launchesGrid = document.querySelector("#launches-grid");
 
 
 async function getUpcomingLaunches() {
-    let response = await fetch('https://lldev.thespacedevs.com/2.3.0/launches/upcoming/?limit=10')
+    let response = await fetch("https://lldev.thespacedevs.com/2.3.0/launches/upcoming/?limit=10");
     let data = await response.json();
-
     let featuredLaunch = data.results[0];
 
     console.log(featuredLaunch);
 
+
+    // Featured launch
     featuredName.innerHTML = featuredLaunch.name;
-    featuredProvider.innerHTML = featuredLaunch.launch_service_provider.name;
-    featuredRocket.innerHTML = featuredLaunch.rocket.configuration.full_name;
-    featuredDate.innerHTML = featuredLaunch.net;
-    featuredTime.innerHTML = featuredLaunch.net;
-    featuredLocation.innerHTML = featuredLaunch.pad.location.name;
-    featuredCountry.innerHTML = featuredLaunch.pad.country.name;
-    featuredDescription.innerHTML = featuredLaunch.mission.description;
-    featuredImage.src = featuredLaunch.image.image_url;
+    featuredProvider.innerHTML =
+        featuredLaunch.launch_service_provider?.name || "Unknown provider";
+    featuredRocket.innerHTML =
+        featuredLaunch.rocket?.configuration?.full_name || "Unknown rocket";
+    featuredLocation.innerHTML =
+        featuredLaunch.pad?.location?.name || "Unknown location";
+    featuredCountry.innerHTML =
+        featuredLaunch.pad?.country?.name || "Unknown country";
+    featuredDescription.innerHTML =
+        featuredLaunch.mission?.description || "No description available.";
+    // Here ? means: only try to get image_url if image exists. Otherwise, JavaScript uses the placeholder image.
+    featuredImage.src =
+        featuredLaunch.image?.image_url || "assets/images/launch-placeholder.png";
 
 
+    // Featured date and time
+    // "2026-10-15T14:30:00Z" convert this to 10/15/2026 , 5:30:00 PM
+    let launchDate = new Date(featuredLaunch.net);
+    featuredDate.innerHTML = launchDate.toLocaleDateString();
+    featuredTime.innerHTML = launchDate.toLocaleTimeString();
+
+
+    // Days until launch
+    // let today = new Date(); This creates a JavaScript Date object containing the current date and current time from the user's device.
+    let today = new Date();
+    let difference = launchDate - today;
+    // Math.ceil(5.2); // 6
+    // Math.ceil(8.7); // 9
+    // 1000  milliseconds = 1 second
+    // 60    seconds = 1 minute
+    // 60    minutes = 1 hour
+    // 24    hours = 1 day
+    let days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+    featuredDays.innerHTML = days;
+
+
+
+    // Clear grid before adding cards
+    launchesGrid.innerHTML = "";
+
+    // Remaining launches
     data.results.slice(1).forEach(function (launch) {
 
+        // discussed it before
+        let launchDate = new Date(launch.net);
+        let formattedDate = launchDate.toLocaleDateString();
+        let formattedTime = launchDate.toLocaleTimeString();
+
+
+        // cartoona 
         launchesGrid.innerHTML += `
-        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden hover:border-blue-500/30 transition-all group cursor-pointer">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden hover:border-blue-500/30 transition-all group cursor-pointer">
 
-            <div class="relative h-48 bg-slate-900/50 flex items-center justify-center">
-                <img 
-                    src="${launch.image?.image_url || 'assets/images/launch-placeholder.png'}"
-                    alt=""
-                    class="w-full h-full object-cover"
-                    onerror="this.onerror=null; this.src='assets/images/launch-placeholder.png';"
-                >
+                <div class="relative h-48 bg-slate-900/50 flex items-center justify-center">
 
-                <div class="absolute top-3 right-3">
-                    <span class="px-3 py-1 bg-green-500/90 text-white backdrop-blur-sm rounded-full text-xs font-semibold">
-                        ${launch.status.name}
-                    </span>
+                    <img 
+                        src="${launch.image?.image_url || 'assets/images/launch-placeholder.png'}"
+                        alt="${launch.name}"
+                        class="w-full h-full object-cover"
+                        onerror="this.onerror=null; this.src='assets/images/launch-placeholder.png';"
+                    >
+
+                    <div class="absolute top-3 right-3">
+                        <span class="px-3 py-1 bg-green-500/90 text-white backdrop-blur-sm rounded-full text-xs font-semibold">
+                            ${launch.status?.name || "Unknown"}
+                        </span>
+                    </div>
+
                 </div>
+
+
+                <div class="p-5">
+
+                    <div class="mb-3">
+
+                        <h4 class="font-bold text-lg mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
+                            ${launch.name}
+                        </h4>
+
+                        <p class="text-sm text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-building text-xs"></i>
+
+                            ${launch.launch_service_provider?.name || "Unknown provider"}
+                        </p>
+
+                    </div>
+
+
+                    <div class="space-y-2 mb-4">
+
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-calendar text-slate-500 w-4"></i>
+
+                            <span class="text-slate-300">
+                                ${formattedDate} - ${formattedTime}
+                            </span>
+                        </div>
+
+
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-rocket text-slate-500 w-4"></i>
+
+                            <span class="text-slate-300">
+                                ${launch.rocket?.configuration?.full_name || "Unknown rocket"}
+                            </span>
+                        </div>
+
+
+                        <div class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-map-marker-alt text-slate-500 w-4"></i>
+
+                            <span class="text-slate-300 line-clamp-1">
+                                ${launch.pad?.name || "Unknown location"}
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="flex items-center gap-2 pt-4 border-t border-slate-700">
+
+                        <button class="flex-1 px-4 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors text-sm font-semibold">
+                            Details
+                        </button>
+
+                        <button class="px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
+                            <i class="far fa-heart"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
-
-            <div class="p-5">
-
-                <div class="mb-3">
-                    <h4 class="font-bold text-lg mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
-                        ${launch.name}
-                    </h4>
-
-                    <p class="text-sm text-slate-400 flex items-center gap-2">
-                        <i class="fas fa-building text-xs"></i>
-                        ${launch.launch_service_provider.name}
-                    </p>
-                </div>
-
-                <div class="space-y-2 mb-4">
-
-                    <div class="flex items-center gap-2 text-sm">
-                        <i class="fas fa-calendar text-slate-500 w-4"></i>
-                        <span class="text-slate-300">
-                            ${launch.net}
-                        </span>
-                    </div>
-
-                    <div class="flex items-center gap-2 text-sm">
-                        <i class="fas fa-rocket text-slate-500 w-4"></i>
-                        <span class="text-slate-300">
-                            ${launch.rocket.configuration.full_name}
-                        </span>
-                    </div>
-
-                    <div class="flex items-center gap-2 text-sm">
-                        <i class="fas fa-map-marker-alt text-slate-500 w-4"></i>
-                        <span class="text-slate-300 line-clamp-1">
-                            ${launch.pad.name}
-                        </span>
-                    </div>
-
-                </div>
-
-                <div class="flex items-center gap-2 pt-4 border-t border-slate-700">
-
-                    <button class="flex-1 px-4 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors text-sm font-semibold">
-                        Details
-                    </button>
-
-                    <button class="px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors">
-                        <i class="far fa-heart"></i>
-                    </button>
-
-                </div>
-
-            </div>
-        </div>
-    `;
+        `;
     });
-
-
-
 }
+
+
 getUpcomingLaunches();
 
 
 
 
-
-
-
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
+// .................................................................................................................
 // .................................................................................................................
 // .................................................................................................................
 // .................................................................................................................

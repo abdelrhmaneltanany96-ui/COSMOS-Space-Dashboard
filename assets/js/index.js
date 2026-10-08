@@ -55,11 +55,11 @@ let apodDateInput = document.querySelector("#apod-date-input");
 let loadDateBtn = document.querySelector("#load-date-btn");
 let todayApodBtn = document.querySelector("#today-apod-btn");
 
-
+let data;
 // fetching data and display data of today 
 async function getData() {
     let response = await fetch("https://science.nasa.gov/wp-json/wp/v2/apod-basic/?api_key=DEMO_KEY");
-    let data = await response.json();
+    data = await response.json();
     console.log(data[0]);
     console.log(data);
     displayApod(data[0]);
@@ -80,8 +80,8 @@ function displayApod(item) {
     apodMediaType.innerHTML = item.media_type;
     apodImage.src = item.hdurl || item.url;
 }
-
 getData();
+
 // add event to loadDataBtn
 loadDateBtn.addEventListener("click", function () {
     let selectedDate = data.find(function (item) {
